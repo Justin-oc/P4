@@ -26,9 +26,12 @@
       $(this)
         .children(".gallery-item")
         .each(function(index) {
-          $.fn.mauGallery.methods.responsiveImageItem($(this)); // Rendre les images responsives
-          $.fn.mauGallery.methods.moveItemInRowWrapper($(this)); // Placer l'élément dans un wrapper
-          $.fn.mauGallery.methods.wrapItemInColumn($(this), options.columns); // Organiser les éléments en colonnes
+          // Rendre les images responsives
+          $.fn.mauGallery.methods.responsiveImageItem($(this)); 
+          // Placer l'élément dans un wrapper
+          $.fn.mauGallery.methods.moveItemInRowWrapper($(this)); 
+          // Organiser les éléments en colonnes
+          $.fn.mauGallery.methods.wrapItemInColumn($(this), options.columns);
 
           // Collecter les tags si activé
           var theTag = $(this).data("gallery-tag");
@@ -154,23 +157,56 @@
       $(`#${lightboxId}`).modal("toggle");
     },
 
-    prevImage() {
+    prevImage(lightboxId) {
       // Afficher l'image précédente dans la lightbox
       let activeImage = null;
 
-      // Trouver l'image actuellement affichée
+      // Trouver l'image actuellement affichée dans la lightbox
       $("img.gallery-item").each(function() {
-        if ($(this).attr("src") === $(".lightboxImage").attr("src")) {
+        if ($(this).attr("src") === $(`#${lightboxId}`).find(".lightboxImage").attr("src")) {
           activeImage = $(this);
         }
       });
 
-      // Récupérer la collection d'images et passer à l'image précédente
-      // (Code simplifié ici pour ne pas répéter trop de logique)
+      // Récupérer la collection d'images de la galerie
+      const images = $("img.gallery-item");
+      let prevIndex = images.index(activeImage) - 1;
+
+      // Si l'on dépasse le début, revenir à la dernière image
+      if (prevIndex < 0) {
+        prevIndex = images.length - 1;
+      }
+
+      // Afficher l'image précédente en changeant la source dans la lightbox
+      $(`#${lightboxId}`)
+        .find(".lightboxImage")
+        .attr("src", $(images[prevIndex]).attr("src"));
     },
 
-    nextImage() {
-      // Afficher l'image suivante dans la lightbox (similaire à prevImage)
+    nextImage(lightboxId) {
+      // Afficher l'image suivante dans la lightbox
+      let activeImage = null;
+
+      // Trouver l'image actuellement affichée dans la lightbox
+      $("img.gallery-item").each(function() {
+        if ($(this).attr("src") === $(`#${lightboxId}`).find(".lightboxImage").attr("src")) {
+          activeImage = $(this);
+        }
+      });
+
+      // Récupérer la collection d'images de la galerie
+      const images = $("img.gallery-item");
+      let nextIndex = images.index(activeImage) + 1;
+
+      // Si l'on dépasse la fin, revenir à la première image
+      if (nextIndex >= images.length) {
+        nextIndex = 0;
+      }
+
+      // Afficher l'image suivante en changeant la source dans la lightbox
+      $(`#${lightboxId}`)
+        .find(".lightboxImage")
+        .attr("src", $(images[nextIndex]).attr("src"));
     },
 
     createLightBox(gallery, lightboxId, navigation) {
