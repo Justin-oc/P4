@@ -74,7 +74,8 @@ body {
 
 img.d-block.w-100 {
     object-fit: cover;
-    height: auto;
+    height: 1920;
+	width: 888;
 }
 
 #about-me {
